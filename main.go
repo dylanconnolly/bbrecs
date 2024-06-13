@@ -13,7 +13,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func main() {
-	fmt.Println("BB RECS BOI")
+	fmt.Println("BB RECS")
 	router := httprouter.New()
 	router.GET("/", HomeHandler)
 
