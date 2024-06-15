@@ -9,21 +9,21 @@ import (
 )
 
 type Group struct {
-	ID         uuid   `json:"id"`
-	Name       string `json:"name"`
-	InviteCode string `json:"inviteCode"`
+	ID         uuid.UUID `json:"id"`
+	Name       string    `json:"name"`
+	InviteCode string    `json:"inviteCode"`
 }
 
 type User struct {
-	ID          uuid   `json:"id"`
-	DisplayName string `json:"displayName"`
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	PhoneNumber string `jsone:"phoneNumber"`
+	ID          uuid.UUID `json:"id"`
+	DisplayName string    `json:"displayName"`
+	FirstName   string    `json:"firstName"`
+	LastName    string    `json:"lastName"`
+	PhoneNumber string    `jsone:"phoneNumber"`
 }
 
 type GroupUser struct {
-	ID      uint
+	ID      uuid.UUID `json:"id"`
 	UserID  uint
 	GroupID uint
 }
