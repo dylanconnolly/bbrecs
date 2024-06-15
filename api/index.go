@@ -1,4 +1,4 @@
-package bbrecs
+package api
 
 import (
 	"fmt"

@@ -51,6 +51,7 @@ type Comment struct {
 }
 
 func NewUser(firstName string, lastName string, phoneNumber string) User {
+	// can validate inputs (fname, lname, pnumber) here before sending to DB layer
 	user := User{
 		ID:          uuid.New(),
 		DisplayName: fmt.Sprintf("%s %s", firstName, lastName),
@@ -60,4 +61,14 @@ func NewUser(firstName string, lastName string, phoneNumber string) User {
 	}
 
 	return user
+}
+
+func NewGroup(name string) Group {
+	group := Group{
+		ID:         uuid.New(),
+		Name:       name,
+		InviteCode: "testCode",
+	}
+
+	return group
 }
