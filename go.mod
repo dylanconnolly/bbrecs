@@ -1,4 +1,4 @@
-module bbrecs
+module github.com/dylanconnolly/bbrecs
 
 go 1.22.4
 
