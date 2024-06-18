@@ -1,6 +1,7 @@
 package bbrecs
 
 import (
+	"context"
 	"image/jpeg"
 	"time"
 
@@ -8,17 +9,14 @@ import (
 )
 
 type UserService interface {
-	CreateUser(user *User) (*User, error)
-	GetUserByID(userID uuid.UUID) (*User, error)
-	GetGroupUsers(groupID uuid.UUID) ([]*User, error)
+	CreateUser(c context.Context, user *User) (*User, error)
+	// GetUserByID(userID uuid.UUID) (*User, error)
+	// GetGroupUsers(groupID uuid.UUID) ([]*User, error)
 }
 
 func GenerateUser(userData NewUserFields) (*User, error) {
 	user := User{
-		ID:            uuid.New(),
 		NewUserFields: userData,
-		CreatedAt:     time.Now(),
-		UpdatedAt:     time.Now(),
 	}
 
 	return &user, nil
@@ -33,14 +31,14 @@ type Group struct {
 type User struct {
 	ID uuid.UUID `json:"id"`
 	NewUserFields
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt" db:"created_at"`
+	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
 }
 
 type NewUserFields struct {
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	PhoneNumber string `json:"phoneNumber"`
+	FirstName   string `json:"firstName" db:"first_name"`
+	LastName    string `json:"lastName" db:"last_name"`
+	PhoneNumber string `json:"phoneNumber" db:"phone_number"`
 }
 type BaseRec struct {
 	ID    uuid.UUID `json:"id"`

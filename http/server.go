@@ -3,12 +3,14 @@ package http
 import (
 	"net/http"
 
+	"github.com/dylanconnolly/bbrecs/bbrecs"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	server *http.Server
-	Router *gin.Engine
+	server      *http.Server
+	Router      *gin.Engine
+	UserService bbrecs.UserService
 }
 
 func NewServer() *Server {
@@ -21,5 +23,5 @@ func NewServer() *Server {
 }
 
 func (s *Server) Serve() {
-	s.Router.Run()
+	s.run()
 }

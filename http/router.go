@@ -13,12 +13,16 @@ func NewRouter() *gin.Engine {
 
 	r.Use(cors.Default())
 	r.Use(gin.Recovery())
-	generateRoutes(r)
 
 	return r
 }
 
-func handleCreateUser(c *gin.Context) {
+func (s *Server) run() {
+	s.generateRoutes(s.Router)
+	s.Router.Run()
+}
+
+func (s *Server) handleCreateUser(c *gin.Context) {
 	var userData bbrecs.NewUserFields
 
 	err := c.ShouldBindJSON(&userData)
@@ -31,10 +35,16 @@ func handleCreateUser(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "could not generate user %s", err)
 	}
 
+	user, err = s.UserService.CreateUser(c, user)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, "error creating user in database %s", err)
+	}
+
 	c.IndentedJSON(http.StatusCreated, user)
 }
 
-func generateRoutes(r *gin.Engine) {
+func (s *Server) generateRoutes(r *gin.Engine) {
 	r.GET("/", func(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, "WELCOME -- THIS IS THE ROOT INDEX PAGE")
 	})
@@ -45,7 +55,7 @@ func generateRoutes(r *gin.Engine) {
 		})
 
 		api.POST("/users", func(c *gin.Context) {
-			handleCreateUser(c)
+			s.handleCreateUser(c)
 		})
 	}
 }
