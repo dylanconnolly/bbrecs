@@ -17,5 +17,5 @@ func main() {
 	fmt.Println("BB RECS")
 	s := http.NewServer()
 	s.UserService = postgres.NewUserService(postgres.CreatePostgresConnPool())
-	s.Serve()
+	s.Run()
 }

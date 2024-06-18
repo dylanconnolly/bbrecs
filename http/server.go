@@ -9,19 +9,22 @@ import (
 
 type Server struct {
 	server      *http.Server
-	Router      *gin.Engine
+	router      *gin.Engine
 	UserService bbrecs.UserService
 }
 
 func NewServer() *Server {
 	s := &Server{
 		server: &http.Server{},
-		Router: NewRouter(),
+		router: NewRouter(),
 	}
+	// register api routes
+	api := s.router.Group("/api")
+	s.registerUserRoutes(api)
 
 	return s
 }
 
-func (s *Server) Serve() {
-	s.run()
+func (s *Server) Run() {
+	s.router.Run()
 }

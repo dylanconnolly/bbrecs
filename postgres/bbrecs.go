@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dylanconnolly/bbrecs/bbrecs"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -38,14 +39,34 @@ func (us *UserService) CreateUser(c context.Context, user *bbrecs.User) (*bbrecs
 		return nil, fmt.Errorf("error with query: %v", err)
 	}
 
-	if err != nil {
-		return nil, fmt.Errorf("error scanning into struct: %s", err)
-	}
-
 	err = tx.Commit(c)
 	if err != nil {
 		return nil, fmt.Errorf("error committing tx: %s", err)
 	}
 
 	return &newUser, nil
+}
+
+func (us *UserService) GetUsers(c context.Context) ([]bbrecs.User, error) {
+	tx, err := us.db.Begin(c)
+
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(c)
+
+	query := `SELECT * FROM users;`
+
+	rows, err := tx.Query(c, query)
+	if err != nil {
+		return nil, err
+	}
+	users, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (bbrecs.User, error) {
+		var user bbrecs.User
+		err := row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.PhoneNumber, &user.CreatedAt, &user.UpdatedAt)
+		return user, err
+	})
+
+	return users, err
+
 }
