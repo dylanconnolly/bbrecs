@@ -8,13 +8,13 @@ For running locally
 - download migrate CLI (https://github.com/golang-migrate/migrate/tree/master/cmd/migrate)
 ```
 ## To create new migration
-migrate create -ext sql -dir db/migrations -seq <migration_name>
+migrate create -ext sql -dir postgres/migrations -seq <migration_name>
 
 ## To run migration
-migrate -database "postgres://localhost:5432/drinkee?sslmode=disable" -path db/migrations up
+migrate -database "postgres://localhost:5432/bbrecs?sslmode=disable" -path postgres/migrations up
 
 ## To force DB to version
-migrate -database "postgres://localhost:5432/drinkee?sslmode=disable" -path db/migrations force <version>
+migrate -database "postgres://localhost:5432/bbrecs?sslmode=disable" -path postgres/migrations force <version>
 
-## e.g. `migrate -database "postgres://localhost:5432/drinkee?sslmode=disable" -path db/migrations force 10`
+## e.g. `migrate -database "postgres://localhost:5432/bbrecs?sslmode=disable" -path postgres/migrations force 10`
 ```

@@ -15,11 +15,11 @@ func (s *Server) handleCreateGroup(c *gin.Context) {
 		c.String(http.StatusBadRequest, "request body could not be parsed into Group struct %s", err)
 	}
 
-	// user, err = s.UserService.CreateUser(c, user)
+	createdGroup, err := s.GroupService.CreateGroup(c, group.Name)
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, "error creating Group in database %s", err)
 	}
 
-	c.IndentedJSON(http.StatusCreated, group)
+	c.IndentedJSON(http.StatusCreated, createdGroup)
 }
