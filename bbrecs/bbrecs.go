@@ -23,10 +23,22 @@ func GenerateUser(userData NewUserFields) (*User, error) {
 	return &user, nil
 }
 
+func GenerateGroup(name string) (*Group, error) {
+
+}
+
 type Group struct {
-	ID         uuid.UUID `json:"id"`
-	Name       string    `json:"name"`
-	InviteCode string    `json:"inviteCode"`
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt" db:"created_at"`
+	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
+}
+
+type GroupInviteLink struct {
+	Code      string    `json:"code"`
+	ExpiresAt time.Time `json:"expiresAt" db:"expires_at"`
+	User      User
+	Group     Group
 }
 
 type User struct {
