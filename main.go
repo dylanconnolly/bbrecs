@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/dylanconnolly/bbrecs/http"
 	"github.com/dylanconnolly/bbrecs/postgres"
@@ -16,7 +17,12 @@ func main() {
 	}
 	fmt.Println("BB RECS")
 	s := http.NewServer()
-	s.UserService = postgres.NewUserService(postgres.CreatePostgresConnPool())
-	s.GroupService = postgres.NewGroupService(postgres.CreatePostgresConnPool())
+	postgresURL := os.Getenv("POSTGRES_URL")
+	if postgresURL == "" {
+		log.Fatalf("Missing postgres connection url in env")
+	}
+	dbpool := postgres.CreatePostgresConnPool(postgresURL)
+	s.UserService = postgres.NewUserService(dbpool)
+	s.GroupService = postgres.NewGroupService(dbpool)
 	s.Run()
 }
