@@ -16,7 +16,7 @@ func NewRouter() *gin.Engine {
 	return r
 }
 
-func (s *Server) registerUserRoutes(r *gin.RouterGroup) {
+func (s *Server) registerUserApiRoutes(r *gin.RouterGroup) {
 	r.GET("/", func(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, "Index page of /api")
 	})
@@ -27,5 +27,11 @@ func (s *Server) registerUserRoutes(r *gin.RouterGroup) {
 
 	r.POST("/users", func(c *gin.Context) {
 		s.handleCreateUser(c)
+	})
+}
+
+func (s *Server) registerGroupApiRoutes(r *gin.RouterGroup) {
+	r.POST("/groups", func(c *gin.Context) {
+		s.handleCreateGroup(c)
 	})
 }

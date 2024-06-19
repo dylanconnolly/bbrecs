@@ -15,16 +15,16 @@ type UserService interface {
 	// GetGroupUsers(groupID uuid.UUID) ([]*User, error)
 }
 
+type GroupService interface {
+	CreateGroup(c context.Context, name string) (*Group, error)
+}
+
 func GenerateUser(userData NewUserFields) (*User, error) {
 	user := User{
 		NewUserFields: userData,
 	}
 
 	return &user, nil
-}
-
-func GenerateGroup(name string) (*Group, error) {
-
 }
 
 type Group struct {

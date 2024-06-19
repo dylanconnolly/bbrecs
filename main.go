@@ -17,5 +17,6 @@ func main() {
 	fmt.Println("BB RECS")
 	s := http.NewServer()
 	s.UserService = postgres.NewUserService(postgres.CreatePostgresConnPool())
+	s.GroupService = postgres.NewGroupService(postgres.CreatePostgresConnPool())
 	s.Run()
 }

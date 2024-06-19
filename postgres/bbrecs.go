@@ -70,3 +70,40 @@ func (us *UserService) GetUsers(c context.Context) ([]bbrecs.User, error) {
 	return users, err
 
 }
+
+type GroupService struct {
+	db *pgxpool.Pool
+}
+
+func NewGroupService(dbpool *pgxpool.Pool) *GroupService {
+	return &GroupService{db: dbpool}
+}
+
+func (gs *GroupService) CreateGroup(c context.Context, name string) (*bbrecs.Group, error) {
+	tx, err := gs.db.Begin(c)
+
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(c)
+
+	query := `
+		INSERT INTO groups (name)
+		VALUES ($1)
+		RETURNING id, name, created_at, updated_at;
+	`
+
+	// _, err = tx.Exec(c, query, user.FirstName, user.LastName, user.PhoneNumber)
+	var newGroup bbrecs.Group
+	err = tx.QueryRow(c, query, name).Scan(&newGroup.ID, &newGroup.Name, &newGroup.CreatedAt, &newGroup.UpdatedAt)
+	if err != nil {
+		return nil, fmt.Errorf("error with query: %v", err)
+	}
+
+	err = tx.Commit(c)
+	if err != nil {
+		return nil, fmt.Errorf("error committing tx: %s", err)
+	}
+
+	return &newGroup, nil
+}
