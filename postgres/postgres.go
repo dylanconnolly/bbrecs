@@ -8,11 +8,10 @@ import (
 )
 
 func CreatePostgresConnPool(url string) *pgxpool.Pool {
-	log.Printf("attempting to connect to postgres: %s", url)
 	dbpool, err := pgxpool.New(context.Background(), url)
 	if err != nil {
-		log.Fatalf("Unable to create postgres connection pool: %s", err)
+		log.Fatalf("Unable to create postgres connection pool to '%s': %v", url, err)
 	}
-	log.Printf("connected to postgres: %s", url)
+	log.Printf("connected to postgres: '%s'", url)
 	return dbpool
 }

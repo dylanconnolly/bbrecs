@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -15,7 +14,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("error loading environment configuration: %s", err)
 	}
-	fmt.Println("BB RECS")
 	s := http.NewServer()
 	postgresURL := os.Getenv("POSTGRES_URL")
 	if postgresURL == "" {
