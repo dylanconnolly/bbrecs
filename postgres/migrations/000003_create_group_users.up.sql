@@ -1,6 +1,8 @@
 CREATE TABLE IF NOT EXISTS group_users(
-    id serial PRIMARY KEY,
-    group_id uuid REFERENCES groups(id) ON DELETE CASCADE,
-    user_id uuid REFERENCES users(id) ON DELETE CASCADE,
-    created_at timestamp NOT NULL DEFAULT current_timestamp
+    group_id uuid,
+    user_id uuid,
+    created_at timestamp NOT NULL DEFAULT current_timestamp,
+    PRIMARY KEY (group_id, user_id),
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

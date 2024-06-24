@@ -13,6 +13,11 @@ migrate create -ext sql -dir postgres/migrations -seq <migration_name>
 ## To run migration
 migrate -database "postgres://localhost:5432/bbrecs?sslmode=disable" -path postgres/migrations up
 
+## To reverse a migration
+migrate -database "postgres://localhost:5432/bbrecs?sslmode=disable" -path postgres/migrations down
+# can add a version to only run down migrations up to that version
+migrate -database "postgres://localhost:5432/bbrecs?sslmode=disable" -path postgres/migrations down 3 (will run all down migrations >= 3)
+
 ## To force DB to version
 migrate -database "postgres://localhost:5432/bbrecs?sslmode=disable" -path postgres/migrations force <version>
 

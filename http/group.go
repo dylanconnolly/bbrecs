@@ -9,8 +9,7 @@ import (
 )
 
 type AddUserToGroupReqBody struct {
-	GroupID uuid.UUID `json:"groupID"`
-	UserID  uuid.UUID `json:"userID"`
+	UserID uuid.UUID `json:"userID"`
 }
 
 func (s *Server) handleCreateGroup(c *gin.Context) {
@@ -30,18 +29,25 @@ func (s *Server) handleCreateGroup(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, createdGroup)
 }
 
-func (s *Server) handleAddUserToGroup(c *gin.Context) {
+func (s *Server) handleAddUserToGroup(c *gin.Context, groupID string) {
 	var reqBody AddUserToGroupReqBody
+	gid, err := uuid.Parse(groupID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "group ID is invalid uuid: %s", err)
+		return
+	}
 
-	err := c.ShouldBindJSON(&reqBody)
+	err = c.ShouldBindJSON(&reqBody)
 	if err != nil {
 		c.String(http.StatusBadRequest, "request body could not be parsed: %s", err)
+		return
 	}
 
-	err = s.GroupService.AddUserToGroup(c, reqBody.GroupID, reqBody.UserID)
+	err = s.GroupService.AddUserToGroup(c, gid, reqBody.UserID)
 	if err != nil {
-		c.String(http.StatusInternalServerError, "error adding user (%s) to group (%s): %s", reqBody.UserID, reqBody.GroupID, err)
+		c.String(http.StatusInternalServerError, "error adding user (%s) to group (%s): %s", reqBody.UserID, groupID, err)
+		return
 	}
 
-	c.String(http.StatusCreated, "successfully added user (%s) to group (%s)", reqBody.UserID, reqBody.GroupID)
+	c.String(http.StatusCreated, "successfully added user (%s) to group (%s)", reqBody.UserID, groupID)
 }
