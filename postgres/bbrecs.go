@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dylanconnolly/bbrecs/bbrecs"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -68,7 +69,6 @@ func (us *UserService) GetUsers(c context.Context) ([]bbrecs.User, error) {
 	})
 
 	return users, err
-
 }
 
 type GroupService struct {
@@ -106,4 +106,31 @@ func (gs *GroupService) CreateGroup(c context.Context, name string) (*bbrecs.Gro
 	}
 
 	return &newGroup, nil
+}
+
+func (gs *GroupService) AddUserToGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error {
+	tx, err := gs.db.Begin(c)
+
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(c)
+
+	query := `
+		INSERT INTO group_users (group_id, user_id)
+		VALUES ($1, $2);
+	`
+
+	_, err = tx.Exec(c, query, GroupID, UserID)
+
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit(c)
+	if err != nil {
+		return fmt.Errorf("error committing tx: %s", err)
+	}
+
+	return nil
 }

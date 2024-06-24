@@ -34,4 +34,8 @@ func (s *Server) registerGroupApiRoutes(r *gin.RouterGroup) {
 	r.POST("/groups", func(c *gin.Context) {
 		s.handleCreateGroup(c)
 	})
+
+	r.POST("/groups/users", func(c *gin.Context) {
+		s.handleAddUserToGroup(c)
+	})
 }
