@@ -9,7 +9,7 @@ import (
 )
 
 func (s *Server) handleGetUsers(c *gin.Context) {
-	var users []bbrecs.User
+	var users []*bbrecs.User
 
 	users, err := s.UserService.GetUsers(c)
 

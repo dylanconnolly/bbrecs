@@ -10,7 +10,7 @@ import (
 
 type UserService interface {
 	CreateUser(c context.Context, user *User) (*User, error)
-	GetUsers(c context.Context) ([]User, error)
+	GetUsers(c context.Context) ([]*User, error)
 	GetUserGroups(c context.Context, userID uuid.UUID) ([]Group, error)
 	// GetUserByID(userID uuid.UUID) (*User, error)
 	// GetGroupUsers(groupID uuid.UUID) ([]*User, error)
@@ -24,18 +24,26 @@ func GenerateUser(userData NewUserFields) (*User, error) {
 	return &user, nil
 }
 
-type GroupInviteLink struct {
-	Code      string    `json:"code"`
-	ExpiresAt time.Time `json:"expiresAt" db:"expires_at"`
-	User      User
-	Group     Group
-}
-
 type User struct {
 	ID uuid.UUID `json:"id"`
 	NewUserFields
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
+}
+
+// func (u *User) Scan(row pgx.Row) error {
+// 	err := row.Scan(&u.ID, &u.FirstName, &u.LastName, &u.PhoneNumber, &u.CreatedAt, &u.UpdatedAt)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
+
+type GroupInviteLink struct {
+	Code      string    `json:"code"`
+	ExpiresAt time.Time `json:"expiresAt" db:"expires_at"`
+	User      User
+	Group     Group
 }
 
 type NewUserFields struct {

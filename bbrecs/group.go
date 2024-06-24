@@ -12,6 +12,7 @@ type GroupService interface {
 }
 
 type GroupUserService interface {
+	GetGroupUsers(c context.Context, GroupID uuid.UUID) ([]*User, error)
 	AddUserToGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error
 	RemoveUserFromGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error
 }

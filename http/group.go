@@ -31,6 +31,21 @@ func (s *Server) handleCreateGroup(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, createdGroup)
 }
 
+func (s *Server) handleGetGroupUsers(c *gin.Context, groupID string) {
+	gid, err := uuid.Parse(groupID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "group ID is invalid (must be UUID): %s", err)
+		return
+	}
+
+	users, err := s.GroupUserService.GetGroupUsers(c, gid)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "error getting group users: %s", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, users)
+}
+
 func (s *Server) handleAddUserToGroup(c *gin.Context, groupID string) {
 	var reqBody GroupUserReqBody
 	gid, err := uuid.Parse(groupID)
