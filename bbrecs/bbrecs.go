@@ -11,6 +11,7 @@ import (
 type UserService interface {
 	CreateUser(c context.Context, user *User) (*User, error)
 	GetUsers(c context.Context) ([]User, error)
+	GetUserGroups(c context.Context, userID uuid.UUID) ([]Group, error)
 	// GetUserByID(userID uuid.UUID) (*User, error)
 	// GetGroupUsers(groupID uuid.UUID) ([]*User, error)
 }

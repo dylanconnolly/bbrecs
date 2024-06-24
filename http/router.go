@@ -24,6 +24,10 @@ func (s *Server) registerUserApiRoutes(r *gin.RouterGroup) {
 	r.GET("/users", func(c *gin.Context) {
 		s.handleGetUsers(c)
 	})
+	r.GET("/users/:id/groups", func(c *gin.Context) {
+		userID := c.Param("id")
+		s.handleGetUserGroups(c, userID)
+	})
 
 	r.POST("/users", func(c *gin.Context) {
 		s.handleCreateUser(c)
@@ -35,8 +39,8 @@ func (s *Server) registerGroupApiRoutes(r *gin.RouterGroup) {
 		s.handleCreateGroup(c)
 	})
 
-	r.POST("/groups/:groupID/users", func(c *gin.Context) {
-		groupID := c.Param("groupID")
+	r.POST("/groups/:id/users", func(c *gin.Context) {
+		groupID := c.Param("id")
 		s.handleAddUserToGroup(c, groupID)
 	})
 }

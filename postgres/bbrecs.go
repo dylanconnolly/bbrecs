@@ -71,6 +71,33 @@ func (us *UserService) GetUsers(c context.Context) ([]bbrecs.User, error) {
 	return users, err
 }
 
+func (us *UserService) GetUserGroups(c context.Context, userID uuid.UUID) ([]bbrecs.Group, error) {
+	tx, err := us.db.Begin(c)
+
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(c)
+
+	query := `
+		SELECT groups.id, groups.name, groups.created_at, groups.updated_at FROM groups 
+		JOIN group_users ON groups.id = group_users.group_id
+		WHERE group_users.user_id=$1;
+	`
+
+	rows, err := tx.Query(c, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	groups, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (bbrecs.Group, error) {
+		var group bbrecs.Group
+		err := row.Scan(&group.ID, &group.Name, &group.CreatedAt, &group.UpdatedAt)
+		return group, err
+	})
+
+	return groups, err
+}
+
 type GroupService struct {
 	db *pgxpool.Pool
 }

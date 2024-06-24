@@ -5,6 +5,7 @@ import (
 
 	"github.com/dylanconnolly/bbrecs/bbrecs"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func (s *Server) handleGetUsers(c *gin.Context) {
@@ -40,4 +41,19 @@ func (s *Server) handleCreateUser(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusCreated, user)
+}
+
+func (s *Server) handleGetUserGroups(c *gin.Context, userID string) {
+	uid, err := uuid.Parse(userID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "user ID is invalid uuid: %s", err)
+		return
+	}
+
+	groups, err := s.UserService.GetUserGroups(c, uid)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "error getting groups: %s", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, groups)
 }
