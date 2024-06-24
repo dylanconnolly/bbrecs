@@ -16,28 +16,12 @@ type UserService interface {
 	// GetGroupUsers(groupID uuid.UUID) ([]*User, error)
 }
 
-type GroupService interface {
-	CreateGroup(c context.Context, name string) (*Group, error)
-}
-
-type GroupUserService interface {
-	AddUserToGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error
-	RemoveUserFromGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error
-}
-
 func GenerateUser(userData NewUserFields) (*User, error) {
 	user := User{
 		NewUserFields: userData,
 	}
 
 	return &user, nil
-}
-
-type Group struct {
-	ID        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt" db:"created_at"`
-	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
 }
 
 type GroupInviteLink struct {
