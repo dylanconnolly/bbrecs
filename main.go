@@ -22,5 +22,6 @@ func main() {
 	dbpool := postgres.CreatePostgresConnPool(postgresURL)
 	s.UserService = postgres.NewUserService(dbpool)
 	s.GroupService = postgres.NewGroupService(dbpool)
+	s.GroupUserService = postgres.NewGroupUserService(dbpool)
 	s.Run()
 }

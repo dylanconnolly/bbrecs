@@ -8,10 +8,11 @@ import (
 )
 
 type Server struct {
-	server       *http.Server
-	router       *gin.Engine
-	UserService  bbrecs.UserService
-	GroupService bbrecs.GroupService
+	server           *http.Server
+	router           *gin.Engine
+	UserService      bbrecs.UserService
+	GroupService     bbrecs.GroupService
+	GroupUserService bbrecs.GroupUserService
 }
 
 func NewServer() *Server {

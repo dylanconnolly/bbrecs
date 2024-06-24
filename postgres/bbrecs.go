@@ -3,10 +3,12 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/dylanconnolly/bbrecs/bbrecs"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -135,8 +137,16 @@ func (gs *GroupService) CreateGroup(c context.Context, name string) (*bbrecs.Gro
 	return &newGroup, nil
 }
 
-func (gs *GroupService) AddUserToGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error {
-	tx, err := gs.db.Begin(c)
+type GroupUserService struct {
+	db *pgxpool.Pool
+}
+
+func NewGroupUserService(dbpool *pgxpool.Pool) *GroupUserService {
+	return &GroupUserService{db: dbpool}
+}
+
+func (s *GroupUserService) AddUserToGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error {
+	tx, err := s.db.Begin(c)
 
 	if err != nil {
 		return err
@@ -146,6 +156,41 @@ func (gs *GroupService) AddUserToGroup(c context.Context, GroupID uuid.UUID, Use
 	query := `
 		INSERT INTO group_users (group_id, user_id)
 		VALUES ($1, $2);
+	`
+
+	_, err = tx.Exec(c, query, GroupID, UserID)
+
+	if err != nil {
+		if pgErr, ok := err.(*pgconn.PgError); ok {
+			// suppress error if group to user relationship already exists
+			if pgErr.Code == "23505" {
+				return nil
+			}
+		}
+		log.Printf("error adding user to group - %s", err)
+		return err
+	}
+
+	err = tx.Commit(c)
+	if err != nil {
+		log.Printf("error committing transaction in AddUserToGroup - %s", err)
+		return err
+	}
+
+	return nil
+}
+
+func (s *GroupUserService) RemoveUserFromGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error {
+	tx, err := s.db.Begin(c)
+
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(c)
+
+	query := `
+		DELETE FROM group_users
+		WHERE group_id=$1 AND user_id=$2
 	`
 
 	_, err = tx.Exec(c, query, GroupID, UserID)

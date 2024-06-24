@@ -18,7 +18,11 @@ type UserService interface {
 
 type GroupService interface {
 	CreateGroup(c context.Context, name string) (*Group, error)
+}
+
+type GroupUserService interface {
 	AddUserToGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error
+	RemoveUserFromGroup(c context.Context, GroupID uuid.UUID, UserID uuid.UUID) error
 }
 
 func GenerateUser(userData NewUserFields) (*User, error) {

@@ -43,4 +43,8 @@ func (s *Server) registerGroupApiRoutes(r *gin.RouterGroup) {
 		groupID := c.Param("id")
 		s.handleAddUserToGroup(c, groupID)
 	})
+	r.DELETE("/groups/:id/users", func(c *gin.Context) {
+		groupID := c.Param("id")
+		s.handleRemoveUserFromGroup(c, groupID)
+	})
 }
