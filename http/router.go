@@ -23,6 +23,10 @@ func (s *Server) registerUserApiRoutes(r *gin.RouterGroup) {
 	r.GET("/users", func(c *gin.Context) {
 		s.handleGetUsers(c)
 	})
+	r.PATCH("/users/:id", func(c *gin.Context) {
+		userID := c.Param("id")
+		s.handleUpdateUser(c, userID)
+	})
 	r.GET("/users/:id/groups", func(c *gin.Context) {
 		userID := c.Param("id")
 		s.handleGetUserGroups(c, userID)

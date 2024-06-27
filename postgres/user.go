@@ -48,6 +48,40 @@ func (us *UserService) CreateUser(c context.Context, user *bbrecs.User) (*bbrecs
 	return &newUser, nil
 }
 
+// TODO: pass struct with nil values so they don't get updated? Or always expect to override all columns with new values even if they are not changing
+func (us *UserService) UpdateUser(c context.Context, userID uuid.UUID, fields bbrecs.UserUpdateFields) (*bbrecs.User, error) {
+	tx, err := us.db.Begin(c)
+
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(c)
+
+	query := `
+		UPDATE users
+		SET first_name = $2,
+			last_name = $3,
+			phone_number = $4,
+		WHERE id = $1
+		RETURNING id, first_name, last_name, phone_number, created_at, updated_at;
+	`
+
+	// _, err = tx.Exec(c, query, user.FirstName, user.LastName, user.PhoneNumber)
+	var user bbrecs.User
+	err = tx.QueryRow(c, query, userID, fields.FirstName, fields.LastName, fields.PhoneNumber).Scan(&user.ID, &user.FirstName, &user.LastName, &user.PhoneNumber, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		fmt.Printf("%+v", user)
+		return nil, fmt.Errorf("error with query: %v", err)
+	}
+
+	err = tx.Commit(c)
+	if err != nil {
+		return nil, fmt.Errorf("error committing tx: %s", err)
+	}
+
+	return &user, nil
+}
+
 func (us *UserService) GetUsers(c context.Context) ([]*bbrecs.User, error) {
 	tx, err := us.db.Begin(c)
 

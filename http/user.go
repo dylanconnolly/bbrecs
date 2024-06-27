@@ -18,7 +18,29 @@ func (s *Server) handleGetUsers(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, users)
+}
 
+func (s *Server) handleUpdateUser(c *gin.Context, userID string) {
+	var fields bbrecs.UserUpdateFields
+
+	uid, err := uuid.Parse(userID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "could not parse user ID (must be UUID): %s", err)
+		return
+	}
+
+	err = c.ShouldBindJSON(&fields)
+	if err != nil {
+		c.String(http.StatusBadRequest, "request body could not be parsed into User struct %s", err)
+	}
+
+	user, err := s.UserService.UpdateUser(c, uid, fields)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, "oops couldnt get users: %s", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, user)
 }
 
 func (s *Server) handleCreateUser(c *gin.Context) {
@@ -46,7 +68,7 @@ func (s *Server) handleCreateUser(c *gin.Context) {
 func (s *Server) handleGetUserGroups(c *gin.Context, userID string) {
 	uid, err := uuid.Parse(userID)
 	if err != nil {
-		c.String(http.StatusBadRequest, "user ID is invalid uuid: %s", err)
+		c.String(http.StatusBadRequest, "could not parse user ID (must be UUID): %s", err)
 		return
 	}
 
