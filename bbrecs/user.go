@@ -10,6 +10,7 @@ import (
 
 type UserService interface {
 	CreateUser(c context.Context, user *User) (*User, error)
+	GetUserByID(c context.Context, userID uuid.UUID) (*User, error)
 	GetUsers(c context.Context) ([]*User, error)
 	GetUserGroups(c context.Context, userID uuid.UUID) ([]Group, error)
 	UpdateUser(c context.Context, userID uuid.UUID, fields UserUpdateFields) (*User, error)

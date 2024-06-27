@@ -8,6 +8,18 @@ import (
 	"github.com/google/uuid"
 )
 
+func (s *Server) handleGetUserByID(c *gin.Context, userID string) {
+	var user bbrecs.User
+
+	user, err := s.UserService.GetUserByID(c, uid)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, "couldn't get user: %s", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, user)
+}
+
 func (s *Server) handleGetUsers(c *gin.Context) {
 	var users []*bbrecs.User
 
