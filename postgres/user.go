@@ -61,7 +61,7 @@ func (us *UserService) UpdateUser(c context.Context, userID uuid.UUID, fields bb
 		UPDATE users
 		SET first_name = $2,
 			last_name = $3,
-			phone_number = $4,
+			phone_number = $4
 		WHERE id = $1
 		RETURNING id, first_name, last_name, phone_number, created_at, updated_at;
 	`
